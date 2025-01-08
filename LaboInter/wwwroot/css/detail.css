@@ -1,0 +1,50 @@
+﻿body {
+    font-family: Bahnschrift
+}
+
+.grid-container {
+    display: grid;
+    width: auto;
+    margin: 10px;
+    gap: 10px;
+    column-count: 3;
+}
+
+.grid-return {
+    grid-column: 1 / 2;
+    grid-row: 1 / 2;
+}
+
+.grid-image {
+    width: auto;
+    display: grid;
+    grid-column: 1 / 2;
+    grid-row: 2 / 3;
+}
+
+.grid-image p {
+    width: auto;
+    font-size: 52px;
+}
+
+.grid-synopsis {
+    grid-column: 2 / 3;
+    grid-row: 2 / 3;
+}
+
+.Synopsis {
+    border: 1px solid grey;
+    padding: 2px;
+}
+
+.grid-pay {
+    grid-column: 2 / 3;
+    grid-row: 2 / 3;
+    justify-self: end;
+    align-self: end;
+    transform: translateY(-50px);
+}
+
+.grid-pay p {
+    font-size: 24px;
+}

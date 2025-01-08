@@ -1,14 +1,36 @@
-﻿@model Coffrets
+﻿@{
+    Coffrets coffret = ViewBag.Coffret;
+}
 
 <head>
     <link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
-    <link href="~/css/shop.css" rel="stylesheet" />
+    <link href="~/css/detail.css" rel="stylesheet" />
 </head>
 <body>
     <script src="/_framework/aspnetcore-browser-refresh.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js"></script>
-    <a href="@Url.Action("Index", "Shop")" class="btn btn-primary">Retour</a>
-    <p>@Model.Affiche</p>
+    <div class="grid-container">
+        <div class="grid-return">
+            <a href="@Url.Action("Index", "Shop")" class="btn btn-primary">Retour</a>
+        </div>
+        <div class="grid-image">
+            <img src="@coffret.Affiche" style="block-size:500px;"/>
+            <p>@coffret.Titre</p>
+        </div>
+        <div class="grid-synopsis">
+            <div class="Synopsis" style="font-size:18px;">@coffret.Synopsis</div>
+        </div>
+        <div class="grid-pay">
+            <p>Prix: @decimal.Round(coffret.Prix, 2)€</p>
+            @if (ViewBag.Client is null) {
+                <a>Connectez vous pour acheter un coffret</a>
+            }
+            else
+            {
+                <a class="btn btn-primary">Acheter</a>
+            }
+        </div>
+    </div>
 </body>

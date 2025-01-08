@@ -31,9 +31,15 @@ namespace LaboInter.Controllers
             return View();
         }
 
-        public IActionResult Detail(Coffrets coffret)
+        public IActionResult Detail(Coffrets coffretin)
         {
-            return View(coffret);
+            string? sessionConnection = HttpContext.Session.GetString("conn");
+            if (sessionConnection is not null) connected_client = JsonSerializer.Deserialize<Clients>(sessionConnection);
+            else connected_client = null;
+
+            ViewBag.Client = connected_client;
+            ViewBag.Coffret = _context.Coffret.Where(x => x.Id == coffretin.Id).First();
+            return View();
         }
     }
 }
