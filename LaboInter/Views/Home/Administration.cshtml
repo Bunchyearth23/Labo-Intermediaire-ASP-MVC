@@ -1,0 +1,184 @@
+﻿@model Coffrets
+
+<head>
+    <link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+    <link href="~/css/site.css" rel="stylesheet" />
+</head>
+<body>
+    <script src="/_framework/aspnetcore-browser-refresh.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js"></script>
+    <div class="Container">
+        <a href="@Url.Action("Index", "Home")" class="btn btn-primary">Retour</a>
+        <div class="ajmd">
+            <p>Ajouter/Modifier Coffret</p>
+            <form action="GetFilm" method="get">
+                <div>
+                    <label>Id: </label>
+                    <input type="number" name="id" />
+                    <button type="submit" class="btn btn-primary">Get</button>
+                    @if (ViewBag.ModifyError is not null)
+                    {
+                        <p class="text-danger">@ViewBag.ModifyError</p>
+                    }
+                </div>
+            </form>
+            @{
+                string data = "";
+            }
+            @if (ViewBag.Modify is not null && ViewBag.Modify) {
+                data = "Modify";
+                
+            } else {
+                data = "Administration";
+            }            
+            <form action="@data" method="post">
+                @if (ViewBag.Modify is not null && ViewBag.Modify)
+                {
+                    <input asp-for="Id" value="@ViewBag.CoffretModif.Id" style="visibility:hidden" />
+                }
+            <div>
+                <label asp-for="Titre"></label>
+                @if (ViewBag.Modify is not null && ViewBag.Modify)
+                {
+                    <input asp-for="Titre" value="@ViewBag.CoffretModif.Titre"/>
+                }
+                else
+                {
+                    <input asp-for="Titre" />
+                }
+                <span asp-validation-for="Titre" class="text-danger"></span>
+            </div>
+            <div>
+                <label asp-for="Bonus"></label>
+                @if (ViewBag.Modify is not null && ViewBag.Modify)
+                {
+                    <input asp-for="Bonus" value="@ViewBag.CoffretModif.Bonus" />
+                }
+                else
+                {
+                    <input asp-for="Bonus" />
+                }
+                <span asp-validation-for="Bonus" class="text-danger"></span>
+            </div>
+            <div>
+                <label asp-for="Prix"></label>
+                @if (ViewBag.Modify is not null && ViewBag.Modify)
+                {
+                    <input asp-for="Prix" type="number" value="@ViewBag.CoffretModif.Prix" />
+                }
+                else
+                {
+                    <input asp-for="Prix" type="number"/>
+                }
+                <span asp-validation-for="Prix" class="text-danger"></span>
+            </div>
+            <div>
+                <label asp-for="Quantité"></label>
+                @if (ViewBag.Modify is not null && ViewBag.Modify)
+                {
+                    <input asp-for="Quantité" type="number" value="@ViewBag.CoffretModif.Quantité" />
+                }
+                else
+                {
+                    <input asp-for="Quantité" type="number" />
+                }
+                <span asp-validation-for="Quantité" class="text-danger"></span>
+            </div>
+            <div>
+                
+                @if (ViewBag.Modify is not null && ViewBag.Modify)
+                {
+                    <input asp-for="Synopsis" style="visibility:hidden;" value="@ViewBag.CoffretModif.Synopsis">
+                }
+                else
+                {
+                    <label asp-for="Synopsis"></label>
+                    <textarea asp-for="Synopsis" class="divtextarea">
+
+                    </textarea>
+                }
+                <span asp-validation-for="Synopsis" class="text-danger"></span>
+            </div>
+            <div>
+                <label asp-for="Genre"></label>
+                @if (ViewBag.Modify is not null && ViewBag.Modify)
+                {
+                    <select asp-for="Genre">
+                        @foreach (Genres x in ViewBag.Genre)
+                        {
+                            if (x.Id == ViewBag.CoffretModif.Genre){
+                                <option value="@x.Id" selected>@x.Label</option>
+                                continue;
+                            }
+                                <option value="@x.Id">@x.Label</option>
+                            }
+                        </select>
+                    }
+                    else
+                    {
+                        <select asp-for="Genre">
+                            @foreach (Genres x in ViewBag.Genre)
+                            {
+                                <option value="@x.Id">@x.Label</option>
+                            }
+                        </select>
+                    }
+                    <span asp-validation-for="Genre" class="text-danger"></span>
+                </div>
+                <div>
+                    <label asp-for="Affiche"></label>
+                @if (ViewBag.Modify is not null && ViewBag.Modify)
+                {
+                    <input asp-for="Affiche" value="@ViewBag.CoffretModif.Affiche"/>
+                }
+                else
+                {
+                    <input asp-for="Affiche" />
+                }
+                    <span asp-validation-for="Affiche" class="text-danger"></span>
+                </div>
+                @if (ViewBag.Message is not null)
+                {
+                    <p class="text-danger">@ViewBag.Message</p>
+                }
+            @{
+                if (ViewBag.Modify is not null && ViewBag.Modify)
+                {
+                    <button type="submit" class="btn btn-primary">Modifier</button>
+                }
+                else
+                {
+                    <button type="submit" class="btn btn-primary">Valider</button>
+                    <a href="@Url.Action("Administration","Home")" class="btn btn-primary">Effacer</a>
+                }
+            }
+            </form>
+        </div>
+        <div class="delfilm">
+            <p>Supprimer Coffret</p>
+            <form action="deleteCoffret" method="post">
+                <label>Id: </label>
+                <input type="number" name="id"/>
+                <button type="submit" class="btn btn-primary">Supprimer</button>
+                @if (ViewBag.MessageDelete is not null)
+                {
+                    <p class="text-danger">@ViewBag.MessageDelete</p>
+                }
+            </form>
+        </div>
+        <div class="ajge">
+            <p>Ajout Genre</p>
+            <form action="addGenre" method="post">
+                <label>Label: </label>
+                <input type="text" name="label" />
+                <button type="submit" class="btn btn-primary">Ajouter Genre</button>
+                @if (ViewBag.MessageGenre is not null)
+                {
+                    <p class="text-danger">@ViewBag.MessageGenre</p>
+                }
+            </form>
+        </div>
+    </div>
+</body>

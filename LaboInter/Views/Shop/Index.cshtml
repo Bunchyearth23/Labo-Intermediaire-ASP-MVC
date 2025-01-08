@@ -1,0 +1,58 @@
+﻿<head>
+    <link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+    <link href="~/css/shop.css" rel="stylesheet" />
+</head>
+<body>
+    <script src="/_framework/aspnetcore-browser-refresh.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js"></script>
+    <div class="banner">
+        <a href="@Url.Action("Index", "Home")" class="btn btn-primary">Retour</a>
+        <h1>Magasin</h1>
+    </div>
+    <div class="banner">
+        @if (ViewBag.Client is not null) {
+            <p>Compte: @ViewBag.Client.Nom @ViewBag.Client.Prenom</p>
+        }
+        else
+        {
+            <p>Compte: Aucun</p>
+        }
+    </div>
+    <div>
+        <table class="table table-align" style="width:100%;">
+            <tr>
+                @if(ViewBag.Client is not null && ViewBag.Client.IsAdmin == true) {
+                    <th>Id</th>
+                }
+                <th>Affiche</th>
+                <th>Titre</th>
+                <th>Bonus</th>
+                <th>Genre</th>
+                <th>Synopsis</th>
+                <th>Quantité</th>
+                <th>Prix</th>
+            </tr>
+            @foreach ((Coffrets, string) x in ViewBag.Coffret) {
+                <tr>
+                    @if (ViewBag.Client is not null && ViewBag.Client.IsAdmin == true)
+                    {
+                        <td>@x.Item1.Id</td>
+                    }
+                    <td>
+                        <a href="@Url.Action("Detail","Shop",x)">
+                            <img src="@x.Item1.Affiche" style="block-size:200px;"/>
+                        </a>
+                    </td>
+                    <td>@x.Item1.Titre</td>
+                    <td>@x.Item1.Bonus</td>
+                    <td>@x.Item2</td>
+                    <td>@x.Item1.Synopsis</td>
+                    <td>@x.Item1.Quantité</td>
+                    <td>@decimal.Round(x.Item1.Prix, 2)</td>
+                </tr>
+            }
+        </table>
+    </div>
+</body>

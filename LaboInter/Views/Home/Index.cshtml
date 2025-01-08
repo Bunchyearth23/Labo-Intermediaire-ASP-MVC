@@ -1,0 +1,41 @@
+﻿<head>
+    <link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet"/>
+    <link href="~/css/site.css" rel="stylesheet"/>
+</head>
+<body>
+    <script src="/_framework/aspnetcore-browser-refresh.js"></script>
+    <div class="main">
+        <h1>Bunchy's Film Shop</h1>
+    </div>
+    <div class="main">
+        @if (ViewBag.Client is not null && ViewBag.Client.IsAdmin)
+        {
+            <h3>Compte: @ViewBag.Client.Nom @ViewBag.Client.Prenom (Administrateur)</h3>
+        }
+        else if(ViewBag.Client is not null)
+        {
+            <h3>Compte: @ViewBag.Client.Nom @ViewBag.Client.Prenom</h3>
+        }
+        else 
+        {
+            <h3>Compte: Aucun</h3>
+        }
+    </div>
+    <div class="main">
+        <a href="@Url.Action("Index", "Shop")" class="btn btn-primary">Magasin</a>
+        @if (ViewBag.Client is null)
+        {
+            <a href="@Url.Action("Inscription", "Home")" class="btn btn-primary">Inscription</a>
+            <a href="@Url.Action("Connection", "Home")" class="btn btn-primary">Connection</a>
+        }
+        @if (ViewBag.Client is not null)
+        {
+            <a href="@Url.Action("Deconnection", "Home")" class="btn btn-primary">Deconnecter</a>
+        }
+        @if(ViewBag.Client is not null && ViewBag.Client.IsAdmin) 
+        {
+            <a href="@Url.Action("Administration", "Home")" class="btn btn-primary">Administration</a>
+        }
+
+    </div>
+</body>

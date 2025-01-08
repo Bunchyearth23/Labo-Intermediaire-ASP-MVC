@@ -1,0 +1,37 @@
+﻿body {
+    font-family: Bahnschrift;
+    font-size: 20px;
+}
+
+table .table-align {
+    width: 100%;
+}
+
+table th, td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.banner {
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    position: relative;
+}
+
+.banner a {
+    margin-right: auto;
+}
+
+.banner h1 {
+    position: absolute;
+    right: 50%;
+    transform: translateX(50%);
+}
+
+.banner p {
+    position: absolute;
+    right: 50%;
+    transform: translateX(50%);
+    margin-top: 15px;
+}
