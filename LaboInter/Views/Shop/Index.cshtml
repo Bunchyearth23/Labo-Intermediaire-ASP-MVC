@@ -40,11 +40,14 @@
                     {
                         <td>@x.Item1.Id</td>
                     }
-                    <td>
-                        <a href="@Url.Action("Detail","Shop",x.Item1)">
-                            <img src="@x.Item1.Affiche" style="block-size:200px;"/>
-                        </a>
-                    </td>
+                    @if (x.Item1.Quantité >= 1)
+                    {
+                        <td>
+                            <a href="@Url.Action("Detail","Shop",x.Item1)">
+                                <img src="@x.Item1.Affiche" style="block-size:200px;"/>
+                            </a>
+                        </td>
+                    }
                     <td>@x.Item1.Titre</td>
                     <td>@x.Item1.Bonus</td>
                     <td>@x.Item2</td>

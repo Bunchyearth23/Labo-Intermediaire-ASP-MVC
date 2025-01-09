@@ -30,6 +30,10 @@
         }
         @if (ViewBag.Client is not null)
         {
+            @if (!ViewBag.AsHistorique)
+            {
+                <a href="@Url.Action("Historique", "Home")" class="btn btn-primary">Historique</a>
+            }
             <a href="@Url.Action("Deconnection", "Home")" class="btn btn-primary">Deconnecter</a>
         }
         @if(ViewBag.Client is not null && ViewBag.Client.IsAdmin) 

@@ -1,7 +1,7 @@
 using DataLayer;
 using LaboInter.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.Text.Json;
 using static Utils.Utils;
 
@@ -26,6 +26,7 @@ namespace LaboInter.Controllers
             else
             {
                 ViewBag.Client = connected_client;
+                ViewBag.AsHistorique = _context.Historique.Where(x => x.ClientId == connected_client.Id).IsNullOrEmpty();
             }
             return View();
         }
@@ -188,7 +189,6 @@ namespace LaboInter.Controllers
         [HttpPost]
         public IActionResult Modify(Coffrets modif)
         {
-            //Coffrets? coffret = _context.Coffret.FirstOrDefault(x => x.Id == modif.Id);
             _context.Coffret.Update(modif);
             _context.SaveChanges();
             return RedirectToAction(nameof(Administration));

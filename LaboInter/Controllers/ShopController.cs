@@ -41,5 +41,24 @@ namespace LaboInter.Controllers
             ViewBag.Coffret = _context.Coffret.Where(x => x.Id == coffretin.Id).First();
             return View();
         }
+
+        public IActionResult Transaction(Coffrets coffretIn)
+        {
+            string? sessionConnection = HttpContext.Session.GetString("conn");
+            if (sessionConnection is not null) connected_client = JsonSerializer.Deserialize<Clients>(sessionConnection);
+            else connected_client = null;
+
+            if (connected_client is not null)
+            {
+                Historiques newHistorique = new(coffretIn, connected_client);
+                _context.Historique.Add(newHistorique);
+
+                coffretIn.Quantité -= 1;
+                _context.Coffret.Update(coffretIn);
+                _context.SaveChanges();
+            }
+
+            return View();
+        }
     }
 }
