@@ -193,5 +193,28 @@ namespace LaboInter.Controllers
             _context.SaveChanges();
             return RedirectToAction(nameof(Administration));
         }
+
+        public IActionResult Historique()
+        {
+            string? sessionConnection = HttpContext.Session.GetString("conn");
+            if (sessionConnection is not null) connected_client = JsonSerializer.Deserialize<Clients>(sessionConnection);
+            else connected_client = null;
+
+            var ClientHistory = (from client in _context.Client
+                                join historique in _context.Historique
+                                on connected_client.Id equals historique.ClientId
+                                join coffret in _context.Coffret
+                                on historique.CoffretId equals coffret.Id
+                                select new
+                                {
+                                    coffret.Titre,
+                                    historique.Amount,
+                                    coffret.Bonus,
+                                    historique.Date,
+                                }).Distinct();
+
+            ViewBag.History = ClientHistory;
+            return View();
+        }
     }
 }

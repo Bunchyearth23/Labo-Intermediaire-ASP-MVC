@@ -1,4 +1,8 @@
-﻿<head>
+﻿@{
+    var historique = ViewBag.History;
+}
+
+<head>
     <link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
     <link href="~/css/shop.css" rel="stylesheet" />
 </head>
@@ -7,4 +11,28 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js"></script>
+    <div class="banner">
+        <a href="@Url.Action("Index", "Home")" class="btn btn-primary">Retour</a>
+        <h1>Historique</h1>
+    </div>
+
+    <div>
+        <table class="table table-align" style="width:100%;">
+            <tr>
+                <th>Titre</th>
+                <th>Bonus</th>
+                <th>Date</th>
+                <th>Valeur</th>
+            </tr>
+            @foreach (var x in historique)
+            {
+                <tr>
+                    <td>@x.Titre</td>
+                    <td>@x.Bonus</td>
+                    <td>@x.Date</td>
+                    <td>@decimal.Round(x.Amount, 2)€</td>
+                </tr>
+            }
+        </table>
+    </div>
 </body>
