@@ -216,5 +216,47 @@ namespace LaboInter.Controllers
             ViewBag.History = ClientHistory;
             return View();
         }
+
+        public IActionResult Modification()
+        {
+            string? sessionConnection = HttpContext.Session.GetString("conn");
+            if (sessionConnection is not null) connected_client = JsonSerializer.Deserialize<Clients>(sessionConnection);
+            else connected_client = null;
+
+            ViewBag.Client = connected_client;
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Modification(AccountModif clientUpdate)
+        {
+            string? sessionConnection = HttpContext.Session.GetString("conn");
+            if (sessionConnection is not null) connected_client = JsonSerializer.Deserialize<Clients>(sessionConnection);
+            else connected_client = null;
+
+            if(ModelState.IsValid)
+            {
+                string oldPasswordHash = PasswordHash(clientUpdate.OldPassword);
+                string newPasswordHash = PasswordHash(clientUpdate.NewPassword);
+                string newAddress = clientUpdate.NewAddress;
+
+                if(oldPasswordHash != connected_client.Password)
+                {
+                    return View(clientUpdate);
+                }
+
+                connected_client.Password = newPasswordHash;
+                connected_client.Adresse = newAddress;
+
+                _context.Client.Update(connected_client);
+                _context.SaveChanges();
+
+                return RedirectToAction(nameof(Index));
+            } 
+            else
+            {
+                return View(clientUpdate);
+            }
+        }
     }
 }

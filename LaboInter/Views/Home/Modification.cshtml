@@ -1,0 +1,38 @@
+﻿@model AccountModif
+
+@{
+    Clients client = ViewBag.Client;
+}
+
+<head>
+    <link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+    <link href="~/css/site.css" rel="stylesheet" />
+</head>
+<body>
+    <script src="/_framework/aspnetcore-browser-refresh.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js"></script>
+    <a href="@Url.Action("Index", "Home")">Retour</a>
+    @if(client is not null) {
+        <div class="main">
+            <form action="Modification" method="post">
+                <div>
+                    <label asp-for="NewAddress"></label>
+                    <input asp-for="NewAddress" />
+                </div>
+                <div>
+                    <label asp-for="OldPassword"></label>
+                    <input type="password" asp-for="OldPassword" />
+                </div>
+                <div>
+                    <label asp-for="NewPassword"></label>
+                    <input type="password" asp-for="NewPassword" />
+                </div>
+                <div>
+                    <button type="submit" class="btn btn-primary">Modifier</button>
+                </div>
+            </form>
+        </div>
+    }
+</body>
