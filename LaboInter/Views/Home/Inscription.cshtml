@@ -14,63 +14,6 @@
         <h1>Inscription</h1>
     </div>
     <div class="main">
-        <form action="Inscription" method="post">
-
-            <div class="main">
-                <label asp-for="Nom" style="font-size : 22px;"></label>
-                <input asp-for="Nom" />
-            </div>
-
-            <div class="main">
-                <span asp-validation-for="Nom" class="text-danger"></span>
-            </div>
-
-            <div class="main">
-                <label asp-for="Prenom" style="font-size : 22px;"></label>
-                <input asp-for="Prenom" />
-            </div>
-
-            <div class="main">
-                <span asp-validation-for="Prenom" class="text-danger"></span>
-            </div>
-
-            <div class="main">
-                <label asp-for="Adresse" style="font-size : 22px;"></label>
-                <input asp-for="Adresse" />
-            </div>
-
-            <div class="main">
-                <span asp-validation-for="Adresse" class="text-danger"></span>
-            </div>
-
-            <div class="main">
-                <label asp-for="Email" style="font-size : 22px;"></label>
-                <input asp-for="Email" />
-            </div>
-
-            <div class="main">
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-
-            <div class="main">
-                <label asp-for="Password" style="font-size : 22px;"></label>
-                <input asp-for="Password" type="password"/>
-            </div>
-
-            <div class="main">
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-
-            @if(ViewBag.Error is not null) {
-                <div class="main">
-                    <p>@ViewBag.Error</p>
-                </div>
-            }
-
-            <div class="main">
-                <a href="@Url.Action("Index", "Home")" class="btn btn-primary">Retour</a>
-                <button type="submit" class="btn btn-primary">S'inscrire</button>
-            </div>
-        </form>
+        <partial name="_InscriptionForm" model="@Model" />
     </div>
 </body>
