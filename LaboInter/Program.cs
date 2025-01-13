@@ -1,4 +1,5 @@
 using DataLayer;
+using LaboInter.Tools;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +15,10 @@ builder.Services.AddSession(options => {
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
+
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddScoped<SessionManager>();
 
 var app = builder.Build();
 

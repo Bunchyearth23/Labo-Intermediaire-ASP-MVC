@@ -1,5 +1,6 @@
 using DataLayer;
 using LaboInter.Models;
+using LaboInter.Tools;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.Text.Json;
@@ -10,23 +11,22 @@ namespace LaboInter.Controllers
     public class HomeController : Controller
     {
         private readonly AppDbContext _context;
-        private Clients? connected_client;
-        public HomeController(AppDbContext context) => _context = context;
+        private SessionManager _sessionManager;
+        public HomeController(AppDbContext context, SessionManager manager)
+        {
+            _context = context;
+            _sessionManager = manager;
+        }
         public IActionResult Index()
         {
-            string? buffer = HttpContext.Session.GetString("conn");
-
-            if (buffer is not null) connected_client = JsonSerializer.Deserialize<Clients>(buffer);
-            else connected_client = null;
-
-            if (connected_client is null)
+            if (_sessionManager.CurrentUser is null)
             {
                 ViewBag.Client = null;
             }
             else
             {
-                ViewBag.Client = connected_client;
-                ViewBag.AsHistorique = _context.Historique.Where(x => x.ClientId == connected_client.Id).IsNullOrEmpty();
+                ViewBag.Client = _sessionManager.CurrentUser;
+                ViewBag.AsHistorique = _context.Historique.Where(x => x.ClientId == _sessionManager.CurrentUser.Id).IsNullOrEmpty();
             }
             return View();
         }
@@ -135,18 +135,22 @@ namespace LaboInter.Controllers
 
             string input_password = PasswordHash(client.Password);
 
-            connected_client = _context.Client
+           // _connected_client = _context.Client
+           //     .Where(x => x.Email == client.Email && x.Password == input_password)
+           //     .FirstOrDefault();
+
+            _sessionManager.CurrentUser = _context.Client
                 .Where(x => x.Email == client.Email && x.Password == input_password)
                 .FirstOrDefault();
 
-            if (connected_client is not null)
+            if (_sessionManager.CurrentUser is not null)
             {
-                HttpContext.Session.SetString("conn", JsonSerializer.Serialize<Clients>(connected_client));
+                HttpContext.Session.SetString("conn", JsonSerializer.Serialize<Clients>(_sessionManager.CurrentUser));
                 return RedirectToAction(nameof(Index));
             } 
             else
             {
-                ViewBag.Error = "Ce compte n'existe pas";
+                ViewBag.Error = "Ce compte n'existe pas ou le mot de passe est incorrect";
                 return View(client);
             }
         }
@@ -196,13 +200,9 @@ namespace LaboInter.Controllers
 
         public IActionResult Historique()
         {
-            string? sessionConnection = HttpContext.Session.GetString("conn");
-            if (sessionConnection is not null) connected_client = JsonSerializer.Deserialize<Clients>(sessionConnection);
-            else connected_client = null;
-
             var ClientHistory = (from client in _context.Client
                                 join historique in _context.Historique
-                                on connected_client.Id equals historique.ClientId
+                                on _sessionManager.CurrentUser.Id equals historique.ClientId
                                 join coffret in _context.Coffret
                                 on historique.CoffretId equals coffret.Id
                                 select new
@@ -219,20 +219,16 @@ namespace LaboInter.Controllers
 
         public IActionResult Modification()
         {
-            string? sessionConnection = HttpContext.Session.GetString("conn");
-            if (sessionConnection is not null) connected_client = JsonSerializer.Deserialize<Clients>(sessionConnection);
-            else connected_client = null;
-
-            ViewBag.Client = connected_client;
+            ViewBag.Client = _sessionManager.CurrentUser;
             return View();
         }
 
         [HttpPost]
         public IActionResult Modification(AccountModif clientUpdate)
         {
-            string? sessionConnection = HttpContext.Session.GetString("conn");
-            if (sessionConnection is not null) connected_client = JsonSerializer.Deserialize<Clients>(sessionConnection);
-            else connected_client = null;
+            //string? sessionConnection = HttpContext.Session.GetString("conn");
+            //if (sessionConnection is not null) _connected_client = JsonSerializer.Deserialize<Clients>(sessionConnection);
+            //else _connected_client = null;
 
             if(ModelState.IsValid)
             {
@@ -240,15 +236,16 @@ namespace LaboInter.Controllers
                 string newPasswordHash = PasswordHash(clientUpdate.NewPassword);
                 string newAddress = clientUpdate.NewAddress;
 
-                if(oldPasswordHash != connected_client.Password)
+                if(oldPasswordHash != _sessionManager.CurrentUser.Password)
                 {
                     return View(clientUpdate);
                 }
 
-                connected_client.Password = newPasswordHash;
-                connected_client.Adresse = newAddress;
+                Clients currentUser = _sessionManager.CurrentUser;
+                currentUser.Password = newPasswordHash;
+                currentUser.Adresse = newAddress;
 
-                _context.Client.Update(connected_client);
+                _context.Client.Update(currentUser);
                 _context.SaveChanges();
 
                 return RedirectToAction(nameof(Index));
