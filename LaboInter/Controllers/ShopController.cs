@@ -1,22 +1,21 @@
 ﻿using DataLayer;
+using LaboInter.Tools;
 using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
 
 namespace LaboInter.Controllers
 {
     public class ShopController : Controller
     {
         private readonly AppDbContext _context;
-        private Clients? connected_client;
+        private SessionManager _sessionManager;
 
-        public ShopController(AppDbContext context) => _context = context;
+        public ShopController(AppDbContext context, SessionManager manager) {
+            _context = context;
+            _sessionManager = manager;
+        }
         public IActionResult Index()
         {
-            string? sessionConnection = HttpContext.Session.GetString("conn");
-            if (sessionConnection is not null) connected_client = JsonSerializer.Deserialize<Clients>(sessionConnection);
-            else connected_client = null;
-
-            ViewBag.Client = connected_client;
+            ViewBag.Client = _sessionManager.CurrentUser;
             List<(Coffrets, string?)> filmListe = [];
             List<Genres> genresList = _context.Genre.AsEnumerable().ToList();
 
@@ -33,24 +32,16 @@ namespace LaboInter.Controllers
 
         public IActionResult Detail(Coffrets coffretin)
         {
-            string? sessionConnection = HttpContext.Session.GetString("conn");
-            if (sessionConnection is not null) connected_client = JsonSerializer.Deserialize<Clients>(sessionConnection);
-            else connected_client = null;
-
-            ViewBag.Client = connected_client;
+            ViewBag.Client = _sessionManager.CurrentUser;
             ViewBag.Coffret = _context.Coffret.Where(x => x.Id == coffretin.Id).First();
             return View();
         }
 
         public IActionResult Transaction(Coffrets coffretIn)
         {
-            string? sessionConnection = HttpContext.Session.GetString("conn");
-            if (sessionConnection is not null) connected_client = JsonSerializer.Deserialize<Clients>(sessionConnection);
-            else connected_client = null;
-
-            if (connected_client is not null)
+            if (_sessionManager.CurrentUser is not null)
             {
-                Historiques newHistorique = new(coffretIn, connected_client);
+                Historiques newHistorique = new(coffretIn, _sessionManager.CurrentUser);
                 _context.Historique.Add(newHistorique);
 
                 coffretIn.Quantité -= 1;
